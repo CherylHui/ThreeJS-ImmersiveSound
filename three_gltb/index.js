@@ -6,6 +6,7 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.129.0/build/three.module
 const canvas = document.querySelector('.webgl')
 const scene = new THREE.Scene()
 
+
 const loader = new GLTFLoader()
 loader.load('assets/art_gallery.glb', function(glb){
     console.log(glb)
@@ -40,6 +41,27 @@ const sizes = {
 const camera = new THREE.PerspectiveCamera(75,sizes.width/sizes.height,0.1,100)
 camera.position.set(0,1,2)
 scene.add(camera)
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+// create the PositionalAudio object (passing in the listener)
+const sound = new THREE.PositionalAudio( listener );
+
+// load a sound and set it as the PositionalAudio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( 'assets/Project_Utopia.ogg', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setRefDistance( 20 );
+	sound.play();
+});
+// create an object for the sound to play from
+const sphere = new THREE.SphereGeometry( 20, 32, 16 );
+const material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
+const mesh = new THREE.Mesh( sphere, material );
+scene.add( mesh );
+
+// finally add the sound to the mesh
+mesh.add( sound );
 
 const renderer = new THREE.WebGL1Renderer({
     canvas: canvas
@@ -55,5 +77,14 @@ function animate(){
     requestAnimationFrame(animate)
     renderer.render(scene,camera)
 }
+
+function mousePressed() {
+    if (sound.isPlaying()) {
+      // .isPlaying() returns a boolean
+      sound.stop();
+    } else {
+      sound.play();
+    }
+  }
 
 animate()
