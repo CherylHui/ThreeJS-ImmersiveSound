@@ -4,7 +4,7 @@ Building and using a basic synthesizer
 
 Code by Anthony T. Marasco [2018]
 */
-
+//basic example
 let synth;
 
 function setup() {

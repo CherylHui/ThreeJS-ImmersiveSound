@@ -39,6 +39,9 @@ const sizes = {
 const camera = new THREE.PerspectiveCamera(75,sizes.width/sizes.height,0.1,100)
 camera.position.set(0,1,2)
 scene.add(camera)
+
+//=========Audio Source part=============
+// create an AudioListener and add it to the camera
 const listener = new THREE.AudioListener();
 camera.add( listener );
 
@@ -60,6 +63,7 @@ scene.add( mesh );
 
 // finally add the sound to the mesh
 mesh.add( sound );
+//=======================================
 
 const renderer = new THREE.WebGL1Renderer({
     canvas: canvas
