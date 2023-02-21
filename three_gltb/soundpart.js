@@ -10,7 +10,7 @@ let synth;
 function setup() {
   startContext()
 
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(500,100);
   background(200);
   synth = new Tone.Synth({
     oscillator: {
