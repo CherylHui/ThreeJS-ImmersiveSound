@@ -19,8 +19,6 @@ loader.load('assets/art_gallery.glb', function(glb){
     console.log('An error occurred')
 })
 
-
-
 const light = new THREE.DirectionalLight(0xffffff,1)
 light.position.set(2,2,5)
 scene.add(light)
