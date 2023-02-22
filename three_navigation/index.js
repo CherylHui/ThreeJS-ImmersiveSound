@@ -4,6 +4,10 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.129.0/build/three.module
 import threejsOrbitControls from 'https://cdn.skypack.dev/threejs-orbit-controls';
 // import{GLTFLoader} from './three.js-master/three.js-master/examples/jsm/loaders/GLTFLoader.js'
 
+
+const startButton = document.getElementById( 'startButton' );
+			startButton.addEventListener( 'click', init );
+
 //const canvas = document.querySelector('.webgl')
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xa8def0);
@@ -25,8 +29,9 @@ loader.load('assets/art_gallery.glb', function(glb){
 
 
 
-
-
+function init() {
+    const overlay = document.getElementById( 'overlay' );
+    overlay.remove();
 //camera
 const camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000)
 // camera.position.set(0,1,2)
@@ -41,24 +46,48 @@ camera.position.z = 10;
 const listener = new THREE.AudioListener();
 camera.add( listener );
 
-// create the PositionalAudio object (passing in the listener)
-const sound = new THREE.PositionalAudio( listener );
-
-// load a sound and set it as the PositionalAudio object's buffer
-const audioLoader = new THREE.AudioLoader();
-audioLoader.load( 'assets/Project_Utopia.ogg', function( buffer ) {
-	sound.setBuffer( buffer );
-	sound.setRefDistance( 20 );
-	sound.play();
-});
 // create an object for the sound to play from
 const sphere = new THREE.SphereGeometry( 20, 32, 16 );
 const material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
 const mesh = new THREE.Mesh( sphere, material );
 scene.add( mesh );
 
+// create the PositionalAudio object (passing in the listener)
+const sound = new THREE.PositionalAudio( listener );
+
+// load a sound and set it as the PositionalAudio object's buffer
+const songElement = document.getElementById( 'music' );
+				sound.setMediaElementSource( songElement );
+				sound.setRefDistance( 20 );
+				songElement.play();
+
 // finally add the sound to the mesh
-mesh.add( sound );
+				mesh.add( sound );
+
+// analysers
+
+const analyser = new THREE.AudioAnalyser( sound, 32 );
+
+// ground
+
+const helper = new THREE.GridHelper( 1000, 10, 0x444444, 0x444444 );
+helper.position.y = 0.1;
+scene.add( helper );
+
+//
+
+const SoundControls = function () {
+
+    this.master = listener.getMasterVolume();
+    this.firstSphere = sound.getVolume();
+};
+
+const GeneratorControls = function () {
+
+    this.frequency = oscillator.frequency.value;
+    this.wavetype = oscillator.type;
+
+};
 
 //renderer
 const renderer = new THREE.WebGL1Renderer({ antialias: true});
@@ -146,6 +175,7 @@ function mousePressed() {
       sound.play();
     }
   }
+}
 // function animate(){
 //     requestAnimationFrame(animate)
 //     renderer.render(scene,camera)
