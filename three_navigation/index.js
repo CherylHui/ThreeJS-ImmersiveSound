@@ -36,6 +36,30 @@ camera.position.z = 10;
 // scene.add(camera)
 
 
+//=========Audio Source part=============
+// create an AudioListener and add it to the camera
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+// create the PositionalAudio object (passing in the listener)
+const sound = new THREE.PositionalAudio( listener );
+
+// load a sound and set it as the PositionalAudio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( 'assets/Project_Utopia.ogg', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setRefDistance( 20 );
+	sound.play();
+});
+// create an object for the sound to play from
+const sphere = new THREE.SphereGeometry( 20, 32, 16 );
+const material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
+const mesh = new THREE.Mesh( sphere, material );
+scene.add( mesh );
+
+// finally add the sound to the mesh
+mesh.add( sound );
+
 //renderer
 const renderer = new THREE.WebGL1Renderer({ antialias: true});
 
@@ -114,7 +138,14 @@ let gameLoop = () => {
     requestAnimationFrame(gameLoop);
 };
 gameLoop();
-
+function mousePressed() {
+    if (sound.isPlaying()) {
+      // .isPlaying() returns a boolean
+      sound.stop();
+    } else {
+      sound.play();
+    }
+  }
 // function animate(){
 //     requestAnimationFrame(animate)
 //     renderer.render(scene,camera)
