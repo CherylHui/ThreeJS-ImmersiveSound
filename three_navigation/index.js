@@ -155,7 +155,7 @@ const sphere = new THREE.SphereGeometry( 5, 32, 16 );
 				//
 
 				const mesh3 = new THREE.Mesh( sphere, material3 );
-				mesh3.position.set( 0, 0, 20 );
+				mesh3.position.set( 0, 20, 0 );
 				scene.add( mesh3 );
 
                 const sound3 = new THREE.PositionalAudio( listener );
