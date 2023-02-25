@@ -4,6 +4,9 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.129.0/build/three.module
 import threejsOrbitControls from 'https://cdn.skypack.dev/threejs-orbit-controls';
 // import{GLTFLoader} from './three.js-master/three.js-master/examples/jsm/loaders/GLTFLoader.js'
 
+let material1, material2, material3;
+
+let analyser1, analyser2, analyser3;
 
 const startButton = document.getElementById( 'startButton' );
 			startButton.addEventListener( 'click', init );
@@ -30,6 +33,7 @@ loader.load('assets/art_gallery.glb', function(glb){
 
 
 function init() {
+ 
     const overlay = document.getElementById( 'overlay' );
     overlay.remove();
 //camera
@@ -47,50 +51,22 @@ const listener = new THREE.AudioListener();
 camera.add( listener );
 
 // create an object for the sound to play from
-const sphere = new THREE.SphereGeometry( 20, 32, 16 );
-const material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
-const mesh = new THREE.Mesh( sphere, material );
-scene.add( mesh );
+// const sphere = new THREE.SphereGeometry( 20, 32, 16 );
+// const material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
+// const mesh = new THREE.Mesh( sphere, material );
 
-// create the PositionalAudio object (passing in the listener)
-const sound = new THREE.PositionalAudio( listener );
 
-// load a sound and set it as the PositionalAudio object's buffer
-const songElement = document.getElementById( 'music' );
-				sound.setMediaElementSource( songElement );
-				sound.setRefDistance( 20 );
-				songElement.play();
 
-// finally add the sound to the mesh
-				mesh.add( sound );
+        
+// // ground
 
-// analysers
+// const helper = new THREE.GridHelper( 1000, 10, 0x444444, 0x444444 );
+// helper.position.y = 0.1;
+// scene.add( helper );
 
-const analyser = new THREE.AudioAnalyser( sound, 32 );
-
-// ground
-
-const helper = new THREE.GridHelper( 1000, 10, 0x444444, 0x444444 );
-helper.position.y = 0.1;
-scene.add( helper );
-
-//
-
-const SoundControls = function () {
-
-    this.master = listener.getMasterVolume();
-    this.firstSphere = sound.getVolume();
-};
-
-const GeneratorControls = function () {
-
-    this.frequency = oscillator.frequency.value;
-    this.wavetype = oscillator.type;
-
-};
 
 //renderer
-const renderer = new THREE.WebGL1Renderer({ antialias: true});
+const renderer = new THREE.WebGL1Renderer({ alpha: true, antialias: true});
 
 renderer.setSize(window.innerWidth,window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio));
@@ -144,22 +120,68 @@ function onWindowResize(){
     renderer.setSize(window.innerWidth,window.innerHeight);
 }
 window.addEventListener('resize', onWindowResize);
+const sphere = new THREE.SphereGeometry( 5, 32, 16 );
 
-// //Agent
-// const agentHeight = 1.0;
-// const agentRadius = 1.0;
-// const agent = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius,agentRadius,agentHeight),
-//             new THREE.MeshPhongMaterial({color:'green'}));
+				material1 = new THREE.MeshPhongMaterial( { color: 0xffaa00, flatShading: true, shininess: 0 } );
+				material2 = new THREE.MeshPhongMaterial( { color: 0xff2200, flatShading: true, shininess: 0 } );
+				material3 = new THREE.MeshPhongMaterial( { color: 0x6622aa, flatShading: true, shininess: 0 } );
 
-// agent.position.y = agentHeight/2;
-// const agentGroup = new THREE.Group();
-// agentGroup.add(agent);
-// agentGroup.position.z = 0;
-// agentGroup.position.x = 0;
-// agentGroup.position.y = 1;
-// scene.add(agentGroup);
+				// sound spheres
 
-// GAMELOOP
+				const mesh1 = new THREE.Mesh( sphere, material1 );
+				mesh1.position.set( - 30, 5, 0 );
+				scene.add( mesh1 );
+
+				const sound1 = new THREE.PositionalAudio( listener );
+				const songElement = document.getElementById( 'drum' );
+				sound1.setMediaElementSource( songElement );
+				sound1.setRefDistance( 20 );
+				songElement.play();
+				mesh1.add( sound1 );
+
+				//
+
+				const mesh2 = new THREE.Mesh( sphere, material2 );
+				mesh2.position.set( 30, 5, 0 );
+				scene.add( mesh2 );
+
+				const sound2 = new THREE.PositionalAudio( listener );
+				const skullbeatzElement = document.getElementById( 'piano' );
+				sound2.setMediaElementSource( skullbeatzElement );
+				sound2.setRefDistance( 20 );
+				skullbeatzElement.play();
+				mesh2.add( sound2 );
+
+				//
+
+				const mesh3 = new THREE.Mesh( sphere, material3 );
+				mesh3.position.set( 0, 0, 20 );
+				scene.add( mesh3 );
+
+                const sound3 = new THREE.PositionalAudio( listener );
+				const synthElement = document.getElementById( 'synthesizer' );
+				sound3.setMediaElementSource( synthElement );
+				sound3.setRefDistance( 20 );
+				synthElement.play();
+				mesh3.add( sound3 );
+
+
+
+
+// analysers
+
+analyser1 = new THREE.AudioAnalyser( sound1, 32 );
+analyser2 = new THREE.AudioAnalyser( sound2, 32 );
+analyser3 = new THREE.AudioAnalyser( sound3, 32 );
+
+// global ambient audio
+
+const sound4 = new THREE.Audio( listener );
+const streetElement = document.getElementById( 'streetSound' );
+sound4.setMediaElementSource( streetElement );
+sound4.setVolume( 0.5 );
+streetElement.play();
+
 const clock = new THREE.Clock();
 let gameLoop = () => {
     orbitControls.update()
@@ -167,14 +189,6 @@ let gameLoop = () => {
     requestAnimationFrame(gameLoop);
 };
 gameLoop();
-function mousePressed() {
-    if (sound.isPlaying()) {
-      // .isPlaying() returns a boolean
-      sound.stop();
-    } else {
-      sound.play();
-    }
-  }
 }
 // function animate(){
 //     requestAnimationFrame(animate)
