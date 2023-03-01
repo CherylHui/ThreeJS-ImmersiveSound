@@ -8,6 +8,17 @@
 	</head>
 
 	<body>
+
+		<audio loop id="drum" preload="auto" style="display: none" >
+            <source src="assets/drum machine.mp3" type="audio/mpeg">
+        </audio>
+        <audio loop id="piano" preload="auto" style="display: none" >
+            <source src="assets/piano.mp3" type="audio/mpeg">
+        </audio>
+        <audio loop id="synthesizer" preload="auto" style="display: none" >
+            <source src="assets/synthesizer.mp3" type="audio/mpeg">
+        </audio>
+
 		<div id="info">
 			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - GLTFLoader<br />
 			Battle Damaged Sci-fi Helmet by
@@ -61,6 +72,7 @@ function init() {
 	camera.position.set( 0, 5, 5 );
 
 	scene = new THREE.Scene();
+	//scene.background = new THREE.Color(0xa8def0);
 
 	clock = new THREE.Clock();
 
@@ -75,17 +87,42 @@ function init() {
 	scene.add( new THREE.AmbientLight( 0x111111 ) );
 
 	
-	const loader = new GLTFLoader();
+
+//GLTF loader
+const loader = new GLTFLoader()
+loader.load('assets/art_gallery.glb', function(glb){
+    console.log(glb)
+    const root = glb.scene;
+    root.scale.set(5,5,5)
+    scene.add(root);
+},function(xhr){
+    console.log((xhr.loader/xhr.total * 100) + "% loaded")
+},function(error){
+    console.log('An error occurred')
+})
+//=========Audio Source part=============
+// create an AudioListener and add it to the camera
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+	//model 1
 	loader.load( '/assets/heart.gltf', function ( gltf ) {
 		gltf.scene.traverse( function ( node ) {
 						if ( node.isMesh ) mesh = node;
 					} );
 					mesh.material.morphTargets = true;
 					mesh.rotation.z = Math.PI / 2;
-					//mesh.material.visible = true;
+					mesh.position.set(-20,7,5);
+					mesh.material.visible = true;
 					
 					scene.add( mesh );
-					
+
+					const sound1 = new THREE.PositionalAudio( listener );
+				const songElement = document.getElementById( 'drum' );
+				sound1.setMediaElementSource( songElement );
+				sound1.setRefDistance( 20 );
+				songElement.play();
+				mesh.add( sound1 );
 		//
 		var pointsMaterial = new THREE.PointsMaterial( {
 			size: 10,
@@ -119,9 +156,18 @@ function init() {
 					} );
 					mesh2.material.morphTargets = true;
 					mesh2.rotation.y = Math.PI / 2;
+					mesh2.position.set(20,5,0);
 					//mesh.material.visible = true;
 					
 					scene.add( mesh2 );
+
+//sound part
+				const sound2 = new THREE.PositionalAudio( listener );
+				const skullbeatzElement = document.getElementById( 'piano' );
+				sound2.setMediaElementSource( skullbeatzElement );
+				sound2.setRefDistance( 20 );
+				skullbeatzElement.play();
+				mesh2.add( sound2 );
 					
 		//
 		var pointsMaterial = new THREE.PointsMaterial( {
@@ -140,6 +186,13 @@ function init() {
 		mesh2.add( points );
 
 	} );
+
+	//Model 3
+
+
+
+
+
 
 
 	//
@@ -185,7 +238,7 @@ function animate() {
 }
 
 ///////////music analysis///////////
-var audio = new Audio("/media/HoneyMoon.mp3");   
+var audio = new Audio("/assets/street sound.mp3");   
 	audio.play();
 
 
