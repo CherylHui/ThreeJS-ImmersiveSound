@@ -19,16 +19,6 @@
             <source src="assets/synthesizer.mp3" type="audio/mpeg">
         </audio>
 
-		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - GLTFLoader<br />
-			Battle Damaged Sci-fi Helmet by
-			<a href="https://sketchfab.com/theblueturtle_" target="_blank" rel="noopener">theblueturtle_</a><br />
-			<a href="https://hdrihaven.com/hdri/?h=royal_esplanade" target="_blank" rel="noopener">Royal Esplanade</a> by <a href="https://hdrihaven.com/" target="_blank" rel="noopener">HDRI Haven</a>
-		</div>
-
-		<!-- Import maps polyfill -->
-		<!-- Remove this when import maps will be widely supported -->
-		<!-- <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script> -->
 
 		<script type="importmap">
 			{
@@ -42,8 +32,6 @@
 		<script type="module">
 
 			import * as THREE from  'three';
-            
-
 			import { OrbitControls } from '/three/examples/jsm/controls/OrbitControls.js';
 			import { GLTFLoader } from '/three/examples/jsm/loaders/GLTFLoader.js';
 			import { RGBELoader } from '/three/examples/jsm/loaders/RGBELoader.js';
@@ -64,7 +52,6 @@ animate();
 function init() {
 
 	//const container = document.getElementById( 'container' );
-
 	const container = document.createElement( 'div' );
 	document.body.appendChild( container );
 
@@ -88,18 +75,20 @@ function init() {
 
 	
 
-//GLTF loader
+//GLTF loader: ART GALLERY
 const loader = new GLTFLoader()
-loader.load('assets/art_gallery.glb', function(glb){
-    console.log(glb)
-    const root = glb.scene;
-    root.scale.set(5,5,5)
+loader.load('assets/newhead.gltf', function(gltf){
+    console.log(gltf)
+    const root = gltf.scene;
+    root.scale.set(0.1,0.1,0.1)
     scene.add(root);
 },function(xhr){
     console.log((xhr.loader/xhr.total * 100) + "% loaded")
 },function(error){
     console.log('An error occurred')
 })
+
+
 //=========Audio Source part=============
 // create an AudioListener and add it to the camera
 const listener = new THREE.AudioListener();
@@ -112,7 +101,7 @@ camera.add( listener );
 					} );
 					mesh.material.morphTargets = true;
 					mesh.rotation.z = Math.PI / 2;
-					mesh.position.set(-20,7,5);
+					mesh.position.set(5,0,0);
 					mesh.material.visible = true;
 					
 					scene.add( mesh );
@@ -156,12 +145,12 @@ camera.add( listener );
 					} );
 					mesh2.material.morphTargets = true;
 					mesh2.rotation.y = Math.PI / 2;
-					mesh2.position.set(20,5,0);
+					mesh2.position.set(10,0,0);
 					//mesh.material.visible = true;
 					
 					scene.add( mesh2 );
 
-//sound part
+	//sound part
 				const sound2 = new THREE.PositionalAudio( listener );
 				const skullbeatzElement = document.getElementById( 'piano' );
 				sound2.setMediaElementSource( skullbeatzElement );
@@ -195,20 +184,28 @@ camera.add( listener );
 
 
 
-	//
-
+	///////////////////////RENDERER//////////////////////
 	renderer = new THREE.WebGLRenderer();
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	container.appendChild( renderer.domElement );
 
-	//
-
+	////////////////////Orbit Control START//////////////////////////
 	const controls = new OrbitControls( camera, renderer.domElement );
-	controls.minDistance = 1;
-	controls.maxDistance = 20;
-
-	//
+	controls.mouseButtons = {
+		LEFT: THREE.MOUSE.ROTATE,
+		MIDDLE: THREE.MOUSE.DOLLY,
+		RIGHT: THREE.MOUSE.PAN
+	}
+	controls.enableDamping = true
+	controls.enablePan = true
+	controls.minDistance = 5
+	controls.maxDistance = 60
+	controls.maxPolarAngle = Math.PI / 2 - 0.05 //prevent camera below ground
+	controls.minPolarAngle = Math.PI / 4 //prevent top down view
+	
+	controls.update();
+	//////////////////////Orbit Control END////////////////////////////////////
 
 	window.addEventListener( 'resize', onWindowResize );
 	document.addEventListener( 'visibilitychange', onVisibilityChange );
