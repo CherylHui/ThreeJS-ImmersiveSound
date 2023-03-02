@@ -102,7 +102,7 @@ camera.add( listener );
 					} );
 					mesh.material.morphTargets = true;
 					mesh.rotation.z = Math.PI / 2;
-					mesh.position.set(5,0,0);
+					mesh.position.set(3,-3,0);
 					mesh.material.visible = true;
 					
 					scene.add( mesh );
@@ -185,17 +185,17 @@ camera.add( listener );
 					} );
 					mesh3.material.morphTargets = true;
 					mesh3.rotation.y = Math.PI / 2;
-					mesh3.position.set(2.5,1,0);
+					mesh3.position.set(-3,3,0);
 					//mesh.material.visible = true;
 					
 					scene.add( mesh3 );
 
 	//sound part
 				const sound3 = new THREE.PositionalAudio( listener );
-				const skullbeatzElement = document.getElementById( 'synthesizer' );
-				sound3.setMediaElementSource( skullbeatzElement );
+				const synthElement = document.getElementById( 'synthesizer' );
+				sound3.setMediaElementSource( synthElement );
 				sound3.setRefDistance( 20 );
-				skullbeatzElement.play();
+				synthElement.play();
 				mesh3.add( sound3 );
 					
 		//
