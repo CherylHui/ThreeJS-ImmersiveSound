@@ -40,6 +40,7 @@ let camera, scene, renderer, clock;
 
 var mesh;
 var mesh2;
+var mesh3;
 
 
 let sign = 1;
@@ -77,7 +78,7 @@ function init() {
 
 //GLTF loader: ART GALLERY
 const loader = new GLTFLoader()
-loader.load('assets/newhead.gltf', function(gltf){
+loader.load('assets/newheadv2.gltf', function(gltf){
     console.log(gltf)
     const root = gltf.scene;
     root.scale.set(0.1,0.1,0.1)
@@ -106,7 +107,7 @@ camera.add( listener );
 					
 					scene.add( mesh );
 
-					const sound1 = new THREE.PositionalAudio( listener );
+				const sound1 = new THREE.PositionalAudio( listener );
 				const songElement = document.getElementById( 'drum' );
 				sound1.setMediaElementSource( songElement );
 				sound1.setRefDistance( 20 );
@@ -145,7 +146,7 @@ camera.add( listener );
 					} );
 					mesh2.material.morphTargets = true;
 					mesh2.rotation.y = Math.PI / 2;
-					mesh2.position.set(10,0,0);
+					mesh2.position.set(0,0,0);
 					//mesh.material.visible = true;
 					
 					scene.add( mesh2 );
@@ -176,8 +177,44 @@ camera.add( listener );
 
 	} );
 
-	//Model 3
+	//////////third model///////////////
 
+	loader.load( '/assets/AnimatedMorphSphereold.gltf', function ( gltf ) {
+		gltf.scene.traverse( function ( node ) {
+						if ( node.isMesh ) mesh3 = node;
+					} );
+					mesh3.material.morphTargets = true;
+					mesh3.rotation.y = Math.PI / 2;
+					mesh3.position.set(2.5,1,0);
+					//mesh.material.visible = true;
+					
+					scene.add( mesh3 );
+
+	//sound part
+				const sound3 = new THREE.PositionalAudio( listener );
+				const skullbeatzElement = document.getElementById( 'synthesizer' );
+				sound3.setMediaElementSource( skullbeatzElement );
+				sound3.setRefDistance( 20 );
+				skullbeatzElement.play();
+				mesh3.add( sound3 );
+					
+		//
+		var pointsMaterial = new THREE.PointsMaterial( {
+			size: 10,
+			sizeAttenuation: false,
+			map: new THREE.TextureLoader().load( 'assets/disc.png' ),
+			alphaTest: 0.5,
+			//morphTargets: true
+		} );
+
+		var points = new THREE.Points( mesh3.geometry, pointsMaterial );
+
+		points.morphTargetInfluences = mesh3.morphTargetInfluences;
+		points.morphTargetDictionary = mesh3.morphTargetDictionary;
+
+		mesh3.add( points );
+
+	} );
 
 
 
@@ -199,7 +236,7 @@ camera.add( listener );
 	}
 	controls.enableDamping = true
 	controls.enablePan = true
-	controls.minDistance = 5
+	controls.minDistance = 1
 	controls.maxDistance = 60
 	controls.maxPolarAngle = Math.PI / 2 - 0.05 //prevent camera below ground
 	controls.minPolarAngle = Math.PI / 4 //prevent top down view
@@ -302,6 +339,8 @@ function render2() {
 
 	const delta = clock.getDelta();
 
+
+	/////////////FIRST MODEL/////////////
 	if ( mesh !== undefined ) {
 		// const step = delta * speed;
 		// mesh.rotation.y += step;
@@ -333,7 +372,7 @@ function render2() {
 	if ( mesh2 !== undefined ) {
 		// const step = delta * speed;
 		// mesh2.rotation.y += step;
-		mesh2.position.x = 0.5;
+		//mesh2.position.x = 0.5;
 		// mesh2.position.x = treFr;
 		mesh2.scale.x = 10*lowFr;
 		mesh2.scale.y = 10*lowFr;
@@ -351,9 +390,36 @@ function render2() {
 
 						sign *= - 1;
 					}
+	}
+
+	/////////////THIRD MODEL/////////////
+	if ( mesh3 !== undefined ) {
+		// const step = delta * speed;
+		// mesh2.rotation.y += step;
+		//mesh3.position.x = 1;
+		// mesh2.position.x = treFr;
+		mesh3.scale.x = 10*bassFr;
+		mesh3.scale.y = 10*bassFr;
+		mesh3.scale.z = 10*bassFr;
+		// console.log(bassFr);
+
+
+		var step = delta * speed;
+
+					mesh3.rotation.y += step;
+
+					mesh3.morphTargetInfluences[ 1 ] = mesh3.morphTargetInfluences[ 1 ] + step * sign;
+
+					if ( mesh3.morphTargetInfluences[ 1 ] <= 0 || mesh3.morphTargetInfluences[ 1 ] >= 1 ) {
+
+						sign *= - 1;
+					}
 
 		
 	}
+
+
+
 	renderer.render( scene, camera );
 };
 
