@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - GLTFloader</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="styles.css">
+	</head>
+
+	<body>
+
+		<audio loop id="drum" preload="auto" style="display: none" >
+            <source src="assets/drum machine.mp3" type="audio/mpeg">
+        </audio>
+        <audio loop id="piano" preload="auto" style="display: none" >
+            <source src="assets/piano.mp3" type="audio/mpeg">
+        </audio>
+        <audio loop id="synthesizer" preload="auto" style="display: none" >
+            <source src="assets/synthesizer.mp3" type="audio/mpeg">
+        </audio>
+
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "../three/build/three.module.js",
+					"three/addons/": "./jsm/"
+				}
+			}
+		</script>
+
+		<script type="module">
+
+			import * as THREE from  'three';
+			import { OrbitControls } from '/three/examples/jsm/controls/OrbitControls.js';
+			import { GLTFLoader } from '/three/examples/jsm/loaders/GLTFLoader.js';
+			import { RGBELoader } from '/three/examples/jsm/loaders/RGBELoader.js';
+
+let camera, scene, renderer, clock;
+
+var mesh;
+var mesh2;
+var mesh3;
+
+
+let sign = 1;
+const speed = 0.5;
+
+init();
+animate();
+
+
+function init() {
+
+	//const container = document.getElementById( 'container' );
+	const container = document.createElement( 'div' );
+	document.body.appendChild( container );
+
+	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.2, 100 );
+	camera.position.set( 0, 5, 5 );
+
+	scene = new THREE.Scene();
+	//scene.background = new THREE.Color(0xa8def0);
+
+	clock = new THREE.Clock();
+
+	const light1 = new THREE.PointLight( 0xff2200, 0.7 );
+	light1.position.set( 100, 100, 100 );
+	scene.add( light1 );
+
+	const light2 = new THREE.PointLight( 0x22ff00, 0.7 );
+	light2.position.set( - 100, - 100, - 100 );
+	scene.add( light2 );
+
+	scene.add( new THREE.AmbientLight( 0x111111 ) );
+
+	
+
+//GLTF loader: ART GALLERY
+const loader = new GLTFLoader()
+loader.load('assets/newheadv2.gltf', function(gltf){
+    console.log(gltf)
+    const root = gltf.scene;
+    root.scale.set(0.1,0.1,0.1)
+    scene.add(root);
+},function(xhr){
+    console.log((xhr.loader/xhr.total * 100) + "% loaded")
+},function(error){
+    console.log('An error occurred')
+})
+
+
+//=========Audio Source part=============
+// create an AudioListener and add it to the camera
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+	//model 1
+	loader.load( '/assets/heart.gltf', function ( gltf ) {
+		gltf.scene.traverse( function ( node ) {
+						if ( node.isMesh ) mesh = node;
+					} );
+					mesh.material.morphTargets = true;
+					mesh.rotation.z = Math.PI / 2;
+					mesh.position.set(5,0,0);
+					mesh.material.visible = true;
+					
+					scene.add( mesh );
+
+				const sound1 = new THREE.PositionalAudio( listener );
+				const songElement = document.getElementById( 'drum' );
+				sound1.setMediaElementSource( songElement );
+				sound1.setRefDistance( 20 );
+				songElement.play();
+				mesh.add( sound1 );
+		//
+		var pointsMaterial = new THREE.PointsMaterial( {
+			size: 10,
+			sizeAttenuation: false,
+			map: new THREE.TextureLoader().load( 'assets/disc.png' ),
+			alphaTest: 0.5,
+			//morphTargets: true
+		} );
+
+		var points = new THREE.Points( mesh.geometry, pointsMaterial );
+		
+
+
+		console.log(pointsMaterial);
+
+		points.morphTargetInfluences = mesh.morphTargetInfluences;
+		console.log(mesh.morphTargetInfluences)
+		points.morphTargetDictionary = mesh.morphTargetDictionary;
+
+		mesh.add( points );
+
+	} );
+
+
+
+
+	//////////second model///////////////
+	loader.load( '/assets/AnimatedMorphSphereold.gltf', function ( gltf ) {
+		gltf.scene.traverse( function ( node ) {
+						if ( node.isMesh ) mesh2 = node;
+					} );
+					mesh2.material.morphTargets = true;
+					mesh2.rotation.y = Math.PI / 2;
+					mesh2.position.set(0,0,0);
+					//mesh.material.visible = true;
+					
+					scene.add( mesh2 );
+
+	//sound part
+				const sound2 = new THREE.PositionalAudio( listener );
+				const skullbeatzElement = document.getElementById( 'piano' );
+				sound2.setMediaElementSource( skullbeatzElement );
+				sound2.setRefDistance( 20 );
+				skullbeatzElement.play();
+				mesh2.add( sound2 );
+					
+		//
+		var pointsMaterial = new THREE.PointsMaterial( {
+			size: 10,
+			sizeAttenuation: false,
+			map: new THREE.TextureLoader().load( 'assets/disc.png' ),
+			alphaTest: 0.5,
+			//morphTargets: true
+		} );
+
+		var points = new THREE.Points( mesh2.geometry, pointsMaterial );
+
+		points.morphTargetInfluences = mesh2.morphTargetInfluences;
+		points.morphTargetDictionary = mesh2.morphTargetDictionary;
+
+		mesh2.add( points );
+
+	} );
+
+	//////////third model///////////////
+
+	loader.load( '/assets/AnimatedMorphSphereold.gltf', function ( gltf ) {
+		gltf.scene.traverse( function ( node ) {
+						if ( node.isMesh ) mesh3 = node;
+					} );
+					mesh3.material.morphTargets = true;
+					mesh3.rotation.y = Math.PI / 2;
+					mesh3.position.set(2.5,1,0);
+					//mesh.material.visible = true;
+					
+					scene.add( mesh3 );
+
+	//sound part
+				const sound3 = new THREE.PositionalAudio( listener );
+				const skullbeatzElement = document.getElementById( 'synthesizer' );
+				sound3.setMediaElementSource( skullbeatzElement );
+				sound3.setRefDistance( 20 );
+				skullbeatzElement.play();
+				mesh3.add( sound3 );
+					
+		//
+		var pointsMaterial = new THREE.PointsMaterial( {
+			size: 10,
+			sizeAttenuation: false,
+			map: new THREE.TextureLoader().load( 'assets/disc.png' ),
+			alphaTest: 0.5,
+			//morphTargets: true
+		} );
+
+		var points = new THREE.Points( mesh3.geometry, pointsMaterial );
+
+		points.morphTargetInfluences = mesh3.morphTargetInfluences;
+		points.morphTargetDictionary = mesh3.morphTargetDictionary;
+
+		mesh3.add( points );
+
+	} );
+
+
+
+
+
+
+	///////////////////////RENDERER//////////////////////
+	renderer = new THREE.WebGLRenderer();
+	renderer.setPixelRatio( window.devicePixelRatio );
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	container.appendChild( renderer.domElement );
+
+	////////////////////Orbit Control START//////////////////////////
+	const controls = new OrbitControls( camera, renderer.domElement );
+	controls.mouseButtons = {
+		LEFT: THREE.MOUSE.ROTATE,
+		MIDDLE: THREE.MOUSE.DOLLY,
+		RIGHT: THREE.MOUSE.PAN
+	}
+	controls.enableDamping = true
+	controls.enablePan = true
+	controls.minDistance = 1
+	controls.maxDistance = 60
+	controls.maxPolarAngle = Math.PI / 2 - 0.05 //prevent camera below ground
+	controls.minPolarAngle = Math.PI / 4 //prevent top down view
+	
+	controls.update();
+	//////////////////////Orbit Control END////////////////////////////////////
+
+	window.addEventListener( 'resize', onWindowResize );
+	document.addEventListener( 'visibilitychange', onVisibilityChange );
+
+}
+
+function onWindowResize() {
+
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
+function onVisibilityChange() {
+	if ( document.hidden === true ) {
+		clock.stop();
+	} else {
+
+		clock.start();
+	}
+}
+
+function animate() {
+	requestAnimationFrame( animate );
+	render();
+}
+
+///////////music analysis///////////
+var audio = new Audio("/assets/street sound.mp3");   
+	audio.play();
+
+
+	//audio anayser setup
+	var context = new AudioContext();
+	var src = context.createMediaElementSource(audio);
+	var analyser = context.createAnalyser();
+	src.connect(analyser);
+	analyser.connect(context.destination);
+	analyser.fftSize = 512;
+	var bufferLength = analyser.frequencyBinCount;
+	var dataArray = new Uint8Array(bufferLength);
+
+
+
+//////render////////////////
+function render() {
+	//const delta = clock.getDelta();
+	//console.log(mesh)
+
+	// if ( mesh !== undefined ) {
+
+	// 	const step = delta * speed;
+
+	// 	mesh.rotation.y += step;
+	// 	mesh.position.y += step;
+
+	// 	mesh.morphTargetInfluences[ 1 ] = mesh.morphTargetInfluences[ 1 ] + step * sign;
+
+	// 	if ( mesh.morphTargetInfluences[ 1 ] <= 0 || mesh.morphTargetInfluences[ 1 ] >= 1 ) {
+
+	// 		sign *= - 1;
+
+	// 	}
+	// }
+	renderer.render( scene, camera );
+}
+
+
+function render2() {
+	analyser.getByteFrequencyData(dataArray);
+	//console.log(dataArray)
+	requestAnimationFrame(render2);
+
+	var lowerHalfArray = dataArray.slice(0, (dataArray.length / 2) - 1);
+	var upperHalfArray = dataArray.slice((dataArray.length / 2) - 1, dataArray.length - 1);
+
+	var overallAvg = avg(dataArray);
+	var lowerMax = max(lowerHalfArray);
+	var lowerAvg = avg(lowerHalfArray);
+	var upperMax = max(upperHalfArray);
+	var upperAvg = avg(upperHalfArray);
+
+	var lowerMaxFr = lowerMax / lowerHalfArray.length;
+	var lowerAvgFr = lowerAvg / lowerHalfArray.length;
+	var upperMaxFr = upperMax / upperHalfArray.length;
+	var upperAvgFr = upperAvg / upperHalfArray.length;
+
+	var bassFr = modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8);
+	var lowFr = modulate(Math.pow(lowerAvgFr, 0.8), 0, 1, 0, 8);
+	var treFr = modulate(upperMaxFr, 0, 1, 0, 4);
+
+	
+
+	const delta = clock.getDelta();
+
+
+	/////////////FIRST MODEL/////////////
+	if ( mesh !== undefined ) {
+		// const step = delta * speed;
+		// mesh.rotation.y += step;
+		//mesh.position.y = bassFr/8;
+		// mesh.position.x = treFr;
+		mesh.scale.x = 50*treFr/2;
+		mesh.scale.y = 50*treFr/2;
+		mesh.scale.z = 50*treFr/2;
+		// console.log(bassFr);
+
+
+		var step = delta * speed;
+
+					mesh.rotation.y += step;
+
+					mesh.morphTargetInfluences[ 1 ] = mesh.morphTargetInfluences[ 1 ] + step * sign;
+
+					if ( mesh.morphTargetInfluences[ 1 ] <= 0 || mesh.morphTargetInfluences[ 1 ] >= 1 ) {
+
+						sign *= - 1;
+					}
+
+		
+	}
+
+
+
+	/////////////SECOND MODEL/////////////
+	if ( mesh2 !== undefined ) {
+		// const step = delta * speed;
+		// mesh2.rotation.y += step;
+		//mesh2.position.x = 0.5;
+		// mesh2.position.x = treFr;
+		mesh2.scale.x = 10*lowFr;
+		mesh2.scale.y = 10*lowFr;
+		mesh2.scale.z = 10*lowFr;
+		// console.log(bassFr);
+
+
+		var step = delta * speed;
+
+					mesh2.rotation.y += step;
+
+					mesh2.morphTargetInfluences[ 1 ] = mesh2.morphTargetInfluences[ 1 ] + step * sign;
+
+					if ( mesh2.morphTargetInfluences[ 1 ] <= 0 || mesh2.morphTargetInfluences[ 1 ] >= 1 ) {
+
+						sign *= - 1;
+					}
+	}
+
+	/////////////THIRD MODEL/////////////
+	if ( mesh3 !== undefined ) {
+		// const step = delta * speed;
+		// mesh2.rotation.y += step;
+		//mesh3.position.x = 1;
+		// mesh2.position.x = treFr;
+		mesh3.scale.x = 10*bassFr;
+		mesh3.scale.y = 10*bassFr;
+		mesh3.scale.z = 10*bassFr;
+		// console.log(bassFr);
+
+
+		var step = delta * speed;
+
+					mesh3.rotation.y += step;
+
+					mesh3.morphTargetInfluences[ 1 ] = mesh3.morphTargetInfluences[ 1 ] + step * sign;
+
+					if ( mesh3.morphTargetInfluences[ 1 ] <= 0 || mesh3.morphTargetInfluences[ 1 ] >= 1 ) {
+
+						sign *= - 1;
+					}
+
+		
+	}
+
+
+
+	renderer.render( scene, camera );
+};
+
+render2();
+
+
+		////////////////////////
+        //helper functions
+        function fractionate(val, minVal, maxVal) {
+            return (val - minVal) / (maxVal - minVal);
+        }
+
+        function modulate(val, minVal, maxVal, outMin, outMax) {
+            var fr = fractionate(val, minVal, maxVal);
+            var delta = outMax - outMin;
+            return outMin + (fr * delta);
+        }
+
+        function avg(arr) {
+            var total = arr.reduce(function (sum, b) { return sum + b; });
+            return (total / arr.length);
+        }
+
+        function max(arr) {
+            return arr.reduce(function (a, b) { return Math.max(a, b); })
+        }
+
+		</script>
+
+	</body>
+</html>
