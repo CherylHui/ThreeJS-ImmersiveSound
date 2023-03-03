@@ -96,13 +96,13 @@ const listener = new THREE.AudioListener();
 camera.add( listener );
 
 	//model 1
-	loader.load( '/assets/heart.gltf', function ( gltf ) {
+	loader.load( '/assets/complex.gltf', function ( gltf ) {
 		gltf.scene.traverse( function ( node ) {
 						if ( node.isMesh ) mesh = node;
 					} );
 					mesh.material.morphTargets = true;
 					mesh.rotation.z = Math.PI / 2;
-					mesh.position.set(3,-3,0);
+					mesh.position.set(5.2,0,0);
 					mesh.material.visible = true;
 					
 					scene.add( mesh );
@@ -140,13 +140,13 @@ camera.add( listener );
 
 
 	//////////second model///////////////
-	loader.load( '/assets/AnimatedMorphSphereold.gltf', function ( gltf ) {
+	loader.load( '/assets/complex.gltf', function ( gltf ) {
 		gltf.scene.traverse( function ( node ) {
 						if ( node.isMesh ) mesh2 = node;
 					} );
 					mesh2.material.morphTargets = true;
-					mesh2.rotation.y = Math.PI / 2;
-					mesh2.position.set(0,0,0);
+					mesh2.rotation.z = Math.PI / 4;
+					mesh2.position.set(-5.2,0,0);
 					//mesh.material.visible = true;
 					
 					scene.add( mesh2 );
@@ -184,8 +184,8 @@ camera.add( listener );
 						if ( node.isMesh ) mesh3 = node;
 					} );
 					mesh3.material.morphTargets = true;
-					mesh3.rotation.y = Math.PI / 2;
-					mesh3.position.set(-3,3,0);
+					//mesh3.rotation.y = Math.PI / 2;
+					mesh3.position.set(0,2,6);
 					//mesh.material.visible = true;
 					
 					scene.add( mesh3 );
@@ -346,22 +346,22 @@ function render2() {
 		// mesh.rotation.y += step;
 		//mesh.position.y = bassFr/8;
 		// mesh.position.x = treFr;
-		mesh.scale.x = 50*treFr/2;
-		mesh.scale.y = 50*treFr/2;
-		mesh.scale.z = 50*treFr/2;
+		mesh.scale.x = 5*bassFr;
+		mesh.scale.y = 5*bassFr;
+		mesh.scale.z = 5*bassFr;
 		// console.log(bassFr);
 
 
 		var step = delta * speed;
 
-					mesh.rotation.y += step;
+					mesh.rotation.x += step;
 
-					mesh.morphTargetInfluences[ 1 ] = mesh.morphTargetInfluences[ 1 ] + step * sign;
+		// 			mesh.morphTargetInfluences[ 1 ] = mesh.morphTargetInfluences[ 1 ] + step * sign;
 
-					if ( mesh.morphTargetInfluences[ 1 ] <= 0 || mesh.morphTargetInfluences[ 1 ] >= 1 ) {
+		// 			if ( mesh.morphTargetInfluences[ 1 ] <= 0 || mesh.morphTargetInfluences[ 1 ] >= 1 ) {
 
-						sign *= - 1;
-					}
+		// 				sign *= - 1;
+		// 			}
 
 		
 	}
@@ -374,22 +374,22 @@ function render2() {
 		// mesh2.rotation.y += step;
 		//mesh2.position.x = 0.5;
 		// mesh2.position.x = treFr;
-		mesh2.scale.x = 10*lowFr;
-		mesh2.scale.y = 10*lowFr;
-		mesh2.scale.z = 10*lowFr;
+		mesh2.scale.x = 12*lowFr;
+		mesh2.scale.y = 12*lowFr;
+		mesh2.scale.z = 12*lowFr;
 		// console.log(bassFr);
 
 
 		var step = delta * speed;
 
-					mesh2.rotation.y += step;
+					mesh2.rotation.z += step;
 
-					mesh2.morphTargetInfluences[ 1 ] = mesh2.morphTargetInfluences[ 1 ] + step * sign;
+					// mesh2.morphTargetInfluences[ 1 ] = mesh2.morphTargetInfluences[ 1 ] + step * sign;
 
-					if ( mesh2.morphTargetInfluences[ 1 ] <= 0 || mesh2.morphTargetInfluences[ 1 ] >= 1 ) {
+					// if ( mesh2.morphTargetInfluences[ 1 ] <= 0 || mesh2.morphTargetInfluences[ 1 ] >= 1 ) {
 
-						sign *= - 1;
-					}
+					// 	sign *= - 1;
+					// }
 	}
 
 	/////////////THIRD MODEL/////////////
@@ -398,15 +398,15 @@ function render2() {
 		// mesh2.rotation.y += step;
 		//mesh3.position.x = 1;
 		// mesh2.position.x = treFr;
-		mesh3.scale.x = 10*bassFr;
-		mesh3.scale.y = 10*bassFr;
-		mesh3.scale.z = 10*bassFr;
+		mesh3.scale.x = 100*treFr;
+		mesh3.scale.y = 100*treFr;
+		mesh3.scale.z = 100*treFr;
 		// console.log(bassFr);
 
 
 		var step = delta * speed;
 
-					mesh3.rotation.y += step;
+					//mesh3.rotation.y += step;
 
 					mesh3.morphTargetInfluences[ 1 ] = mesh3.morphTargetInfluences[ 1 ] + step * sign;
 
