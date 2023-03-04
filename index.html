@@ -60,17 +60,21 @@ function init() {
 	camera.position.set( 0, 5, 5 );
 
 	scene = new THREE.Scene();
-	//scene.background = new THREE.Color(0xa8def0);
+	//scene.background = new THREE.Color(0xffffff);
 
 	clock = new THREE.Clock();
 
-	const light1 = new THREE.PointLight( 0xff2200, 0.7 );
+	const light1 = new THREE.PointLight( 0xffffff, 0.7 );
 	light1.position.set( 100, 100, 100 );
 	scene.add( light1 );
 
 	const light2 = new THREE.PointLight( 0x22ff00, 0.7 );
 	light2.position.set( - 100, - 100, - 100 );
 	scene.add( light2 );
+
+	const light3 = new THREE.PointLight( 0xff2200, 0.7 );
+	light1.position.set( 100, 150, 100 );
+	scene.add( light1 );
 
 	scene.add( new THREE.AmbientLight( 0x111111 ) );
 
@@ -96,7 +100,7 @@ const listener = new THREE.AudioListener();
 camera.add( listener );
 
 	//model 1
-	loader.load( '/assets/complex.gltf', function ( gltf ) {
+	loader.load( '/assets/ear_bluishgreen.gltf', function ( gltf ) {
 		gltf.scene.traverse( function ( node ) {
 						if ( node.isMesh ) mesh = node;
 					} );
@@ -140,7 +144,7 @@ camera.add( listener );
 
 
 	//////////second model///////////////
-	loader.load( '/assets/complex.gltf', function ( gltf ) {
+	loader.load( '/assets/ear_bluishgreen.gltf', function ( gltf ) {
 		gltf.scene.traverse( function ( node ) {
 						if ( node.isMesh ) mesh2 = node;
 					} );
@@ -179,7 +183,7 @@ camera.add( listener );
 
 	//////////third model///////////////
 
-	loader.load( '/assets/AnimatedMorphSphereold.gltf', function ( gltf ) {
+	loader.load( '/assets/metalbrain.gltf', function ( gltf ) {
 		gltf.scene.traverse( function ( node ) {
 						if ( node.isMesh ) mesh3 = node;
 					} );
