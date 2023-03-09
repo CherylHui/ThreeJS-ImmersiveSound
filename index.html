@@ -30,6 +30,10 @@
 		</script>
 
 		<script type="module">
+	//ThreeJS.ImmersiveSoundPrototype
+	//Author: Sze Man Chiu ,Wing Hei Cheryl Hui ,Wei Lee, Yuan Peng, Jaime To 
+	//Reference from : https://github.com/mrdoob/three.js/blob/master/examples/webaudio_sandbox.html [Positional Audio Part]
+	//
 
 			import * as THREE from  'three';
 			import { OrbitControls } from '/three/examples/jsm/controls/OrbitControls.js';
@@ -80,7 +84,7 @@ function init() {
 
 	
 
-//GLTF loader: ART GALLERY
+//GLTF loader: Head
 const loader = new GLTFLoader()
 loader.load('assets/newheadv2.gltf', function(gltf){
     console.log(gltf)
@@ -94,30 +98,33 @@ loader.load('assets/newheadv2.gltf', function(gltf){
 })
 
 
-//=========Audio Source part=============
+//=========Audio Object Part=============
+//Reference from : https://github.com/mrdoob/three.js/blob/master/examples/webaudio_sandbox.html [Positional Audio Part]
 // create an AudioListener and add it to the camera
 const listener = new THREE.AudioListener();
 camera.add( listener );
 
-	//model 1
+	//////////first model///////////////
+	// loading in 3D ear object
 	loader.load( '/assets/ear_bluishgreen.gltf', function ( gltf ) {
 		gltf.scene.traverse( function ( node ) {
 						if ( node.isMesh ) mesh = node;
 					} );
 					mesh.material.morphTargets = true;
-					mesh.rotation.z = Math.PI / 2;
-					mesh.position.set(5.2,0,0);
-					mesh.material.visible = true;
+					mesh.rotation.z = Math.PI / 2; // rotate the object along z axis 
+					mesh.position.set(5.2,0,0); //setting the object's position
+					mesh.material.visible = true; //showing the material of the object
 					
-					scene.add( mesh );
+					scene.add( mesh ); //adding the object to the scene
 
-				const sound1 = new THREE.PositionalAudio( listener );
-				const songElement = document.getElementById( 'drum' );
-				sound1.setMediaElementSource( songElement );
-				sound1.setRefDistance( 20 );
-				songElement.play();
-				mesh.add( sound1 );
-		//
+		//Adding audio part
+				const sound1 = new THREE.PositionalAudio( listener ); //adding positional audio listener
+				const songElement = document.getElementById( 'drum' ); //locating the drum track 
+				sound1.setMediaElementSource( songElement );  //set the audio as the drum track
+				sound1.setRefDistance( 20 ); //set referenece distance
+				songElement.play(); //play the audio part
+				mesh.add( sound1 ); // add the audio part to the object, the ear
+		
 		var pointsMaterial = new THREE.PointsMaterial( {
 			size: 10,
 			sizeAttenuation: false,
@@ -144,24 +151,25 @@ camera.add( listener );
 
 
 	//////////second model///////////////
+	// loading in 3D ear object
 	loader.load( '/assets/ear_bluishgreen.gltf', function ( gltf ) {
 		gltf.scene.traverse( function ( node ) {
 						if ( node.isMesh ) mesh2 = node;
 					} );
 					mesh2.material.morphTargets = true;
-					mesh2.rotation.z = Math.PI / 4;
-					mesh2.position.set(-5.2,0,0);
+					mesh2.rotation.z = Math.PI / 4; // rotate the object along z axis 
+					mesh2.position.set(-5.2,0,0); //set the position of the object
 					//mesh.material.visible = true;
 					
-					scene.add( mesh2 );
+					scene.add( mesh2 ); // add the object to the scene
 
-	//sound part
-				const sound2 = new THREE.PositionalAudio( listener );
-				const skullbeatzElement = document.getElementById( 'piano' );
-				sound2.setMediaElementSource( skullbeatzElement );
-				sound2.setRefDistance( 20 );
-				skullbeatzElement.play();
-				mesh2.add( sound2 );
+	//Adding audio part
+				const sound2 = new THREE.PositionalAudio( listener ); //adding positional audio listener
+				const skullbeatzElement = document.getElementById( 'piano' ); //locating the piano track
+				sound2.setMediaElementSource( skullbeatzElement ); //set the audio as the piano track
+				sound2.setRefDistance( 20 ); //set referenece distance
+				skullbeatzElement.play(); //play the audio part
+				mesh2.add( sound2 ); // add the audio part to the object, the ear
 					
 		//
 		var pointsMaterial = new THREE.PointsMaterial( {
@@ -182,25 +190,24 @@ camera.add( listener );
 	} );
 
 	//////////third model///////////////
-
+	// loading in 3D metal brain object (the small brain inside the scene)
 	loader.load( '/assets/metalbrain.gltf', function ( gltf ) {
 		gltf.scene.traverse( function ( node ) {
 						if ( node.isMesh ) mesh3 = node;
 					} );
 					mesh3.material.morphTargets = true;
-					//mesh3.rotation.y = Math.PI / 2;
-					mesh3.position.set(0,2,6);
+					mesh3.position.set(0,2,6); //setting the position of the object
 					//mesh.material.visible = true;
 					
-					scene.add( mesh3 );
+					scene.add( mesh3 ); // add the object to the scene
 
 	//sound part
-				const sound3 = new THREE.PositionalAudio( listener );
-				const synthElement = document.getElementById( 'synthesizer' );
-				sound3.setMediaElementSource( synthElement );
-				sound3.setRefDistance( 20 );
-				synthElement.play();
-				mesh3.add( sound3 );
+				const sound3 = new THREE.PositionalAudio( listener ); //adding positional audio listener
+				const synthElement = document.getElementById( 'synthesizer' );//locating the synthesizer track
+				sound3.setMediaElementSource( synthElement );//set the audio as the synthesizer track
+				sound3.setRefDistance( 20 );//set referenece distance
+				synthElement.play();//play the audio part
+				mesh3.add( sound3 );// add the audio part to the object, the brain
 					
 		//
 		var pointsMaterial = new THREE.PointsMaterial( {
@@ -276,15 +283,17 @@ function animate() {
 }
 
 ///////////music analysis///////////
-var audio = new Audio("/assets/street sound.mp3");   
-	audio.play();
+//We are only analysing the music of the ambient to trigger the transformation of the 3D objects
+var audio = new Audio("/assets/street sound.mp3");   //Letting audio as the street sound
+	audio.play(); // playing the street sound audio
 
 
-	//audio anayser setup
+	//audio analyser setup
+	//////Analysing the street sound audio//////
 	var context = new AudioContext();
-	var src = context.createMediaElementSource(audio);
-	var analyser = context.createAnalyser();
-	src.connect(analyser);
+	var src = context.createMediaElementSource(audio); //creating the source as audio(the street sound)
+	var analyser = context.createAnalyser(); //create an analyser 
+	src.connect(analyser); 
 	analyser.connect(context.destination);
 	analyser.fftSize = 512;
 	var bufferLength = analyser.frequencyBinCount;
