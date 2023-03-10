@@ -33,6 +33,10 @@
 	//ThreeJS.ImmersiveSoundPrototype
 	//Author: Sze Man Chiu ,Wing Hei Cheryl Hui ,Wei Lee, Yuan Peng, Jaime To 
 	//Reference from : https://github.com/mrdoob/three.js/blob/master/examples/webaudio_sandbox.html [Positional Audio Part]
+	//Reference from : https://threejs.org/examples/?q=sphere#webgl_morphtargets_sphere [3D shape updates]
+	//Reference from : https://jsfiddle.net/bentoBAUX/839b7q5p/12/ [audio analysis]
+	//Reference from : https://www.youtube.com/watch?v=0pCpRvoOTBs&list=PLsIKyI8X98GLXIzQrtTJGfsCHgFFKmGxM [Orbit Control]
+	//Reference from : https://www.youtube.com/watch?v=yPA2z7fl4J8 [GLTF loader]
 	//
 
 			import * as THREE from  'three';
@@ -82,8 +86,8 @@ function init() {
 
 	scene.add( new THREE.AmbientLight( 0x111111 ) );
 
-	
 
+//Reference from : https://www.youtube.com/watch?v=yPA2z7fl4J8 [GLTF loader]
 //GLTF loader: Head
 const loader = new GLTFLoader()
 loader.load('assets/newheadv2.gltf', function(gltf){
@@ -135,8 +139,6 @@ camera.add( listener );
 
 		var points = new THREE.Points( mesh.geometry, pointsMaterial );
 		
-
-
 		console.log(pointsMaterial);
 
 		points.morphTargetInfluences = mesh.morphTargetInfluences;
@@ -146,8 +148,6 @@ camera.add( listener );
 		mesh.add( points );
 
 	} );
-
-
 
 
 	//////////second model///////////////
@@ -228,18 +228,18 @@ camera.add( listener );
 	} );
 
 
-
-
-
-
 	///////////////////////RENDERER//////////////////////
 	renderer = new THREE.WebGLRenderer();
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	container.appendChild( renderer.domElement );
 
+
+	//Reference from : https://www.youtube.com/watch?v=0pCpRvoOTBs&list=PLsIKyI8X98GLXIzQrtTJGfsCHgFFKmGxM [Orbit Control]
 	////////////////////Orbit Control START//////////////////////////
 	const controls = new OrbitControls( camera, renderer.domElement );
+	
+	//orbit control by mouse
 	controls.mouseButtons = {
 		LEFT: THREE.MOUSE.ROTATE,
 		MIDDLE: THREE.MOUSE.DOLLY,
@@ -261,18 +261,15 @@ camera.add( listener );
 }
 
 function onWindowResize() {
-
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 	renderer.setSize( window.innerWidth, window.innerHeight );
-
 }
 
 function onVisibilityChange() {
 	if ( document.hidden === true ) {
 		clock.stop();
 	} else {
-
 		clock.start();
 	}
 }
@@ -282,6 +279,7 @@ function animate() {
 	render();
 }
 
+//Reference from : https://jsfiddle.net/bentoBAUX/839b7q5p/12/ [audio analysis]
 ///////////music analysis///////////
 //We are only analysing the music of the ambient to trigger the transformation of the 3D objects
 var audio = new Audio("/assets/street sound.mp3");   //Letting audio as the street sound
@@ -299,28 +297,8 @@ var audio = new Audio("/assets/street sound.mp3");   //Letting audio as the stre
 	var bufferLength = analyser.frequencyBinCount;
 	var dataArray = new Uint8Array(bufferLength);
 
-
-
 //////render////////////////
 function render() {
-	//const delta = clock.getDelta();
-	//console.log(mesh)
-
-	// if ( mesh !== undefined ) {
-
-	// 	const step = delta * speed;
-
-	// 	mesh.rotation.y += step;
-	// 	mesh.position.y += step;
-
-	// 	mesh.morphTargetInfluences[ 1 ] = mesh.morphTargetInfluences[ 1 ] + step * sign;
-
-	// 	if ( mesh.morphTargetInfluences[ 1 ] <= 0 || mesh.morphTargetInfluences[ 1 ] >= 1 ) {
-
-	// 		sign *= - 1;
-
-	// 	}
-	// }
 	renderer.render( scene, camera );
 }
 
@@ -330,6 +308,7 @@ function render2() {
 	//console.log(dataArray)
 	requestAnimationFrame(render2);
 
+	//extract different part of the sound analysized data 
 	var lowerHalfArray = dataArray.slice(0, (dataArray.length / 2) - 1);
 	var upperHalfArray = dataArray.slice((dataArray.length / 2) - 1, dataArray.length - 1);
 
@@ -348,11 +327,9 @@ function render2() {
 	var lowFr = modulate(Math.pow(lowerAvgFr, 0.8), 0, 1, 0, 8);
 	var treFr = modulate(upperMaxFr, 0, 1, 0, 4);
 
-	
-
 	const delta = clock.getDelta();
 
-
+	//how the three 3D models are transformed based on sound 
 	/////////////FIRST MODEL/////////////
 	if ( mesh !== undefined ) {
 		// const step = delta * speed;
@@ -379,8 +356,6 @@ function render2() {
 		
 	}
 
-
-
 	/////////////SECOND MODEL/////////////
 	if ( mesh2 !== undefined ) {
 		// const step = delta * speed;
@@ -391,7 +366,6 @@ function render2() {
 		mesh2.scale.y = 12*lowFr;
 		mesh2.scale.z = 12*lowFr;
 		// console.log(bassFr);
-
 
 		var step = delta * speed;
 
@@ -405,6 +379,7 @@ function render2() {
 					// }
 	}
 
+	//Reference from : https://threejs.org/examples/?q=sphere#webgl_morphtargets_sphere [3D shape updates]
 	/////////////THIRD MODEL/////////////
 	if ( mesh3 !== undefined ) {
 		// const step = delta * speed;
@@ -416,7 +391,6 @@ function render2() {
 		mesh3.scale.z = 100*treFr;
 		// console.log(bassFr);
 
-
 		var step = delta * speed;
 
 					//mesh3.rotation.y += step;
@@ -427,20 +401,15 @@ function render2() {
 
 						sign *= - 1;
 					}
-
-		
 	}
-
-
 
 	renderer.render( scene, camera );
 };
-
 render2();
 
-
+		//Reference from : https://jsfiddle.net/bentoBAUX/839b7q5p/12/ [audio analysis]
 		////////////////////////
-        //helper functions
+        //helper functions for audio
         function fractionate(val, minVal, maxVal) {
             return (val - minVal) / (maxVal - minVal);
         }
