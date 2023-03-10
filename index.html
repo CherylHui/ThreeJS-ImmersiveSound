@@ -44,11 +44,11 @@
 			import { GLTFLoader } from '/three/examples/jsm/loaders/GLTFLoader.js';
 			import { RGBELoader } from '/three/examples/jsm/loaders/RGBELoader.js';
 
-let camera, scene, renderer, clock;
+let camera, scene, renderer, clock; //define camera, scene, renderer and clock
 
-var mesh;
-var mesh2;
-var mesh3;
+var mesh; //define mesh for object
+var mesh2;//define mesh for object
+var mesh3;//define mesh for object
 
 
 let sign = 1;
@@ -177,7 +177,7 @@ camera.add( listener );
 			sizeAttenuation: false,
 			map: new THREE.TextureLoader().load( 'assets/disc.png' ),
 			alphaTest: 0.5,
-			//morphTargets: true
+			
 		} );
 
 		var points = new THREE.Points( mesh2.geometry, pointsMaterial );
@@ -215,7 +215,7 @@ camera.add( listener );
 			sizeAttenuation: false,
 			map: new THREE.TextureLoader().load( 'assets/disc.png' ),
 			alphaTest: 0.5,
-			//morphTargets: true
+		
 		} );
 
 		var points = new THREE.Points( mesh3.geometry, pointsMaterial );
@@ -305,7 +305,7 @@ function render() {
 
 function render2() {
 	analyser.getByteFrequencyData(dataArray);
-	//console.log(dataArray)
+	
 	requestAnimationFrame(render2);
 
 	//extract different part of the sound analysized data 
@@ -332,36 +332,25 @@ function render2() {
 	//how the three 3D models are transformed based on sound 
 	/////////////FIRST MODEL/////////////
 	if ( mesh !== undefined ) {
-		// const step = delta * speed;
-		// mesh.rotation.y += step;
-		//mesh.position.y = bassFr/8;
-		// mesh.position.x = treFr;
+	
 		mesh.scale.x = 5*bassFr;
 		mesh.scale.y = 5*bassFr;
 		mesh.scale.z = 5*bassFr;
-		// console.log(bassFr);
+		
 
 
 		var step = delta * speed;
 
 					mesh.rotation.x += step;
 
-		// 			mesh.morphTargetInfluences[ 1 ] = mesh.morphTargetInfluences[ 1 ] + step * sign;
-
-		// 			if ( mesh.morphTargetInfluences[ 1 ] <= 0 || mesh.morphTargetInfluences[ 1 ] >= 1 ) {
-
-		// 				sign *= - 1;
-		// 			}
+		
 
 		
 	}
 
 	/////////////SECOND MODEL/////////////
 	if ( mesh2 !== undefined ) {
-		// const step = delta * speed;
-		// mesh2.rotation.y += step;
-		//mesh2.position.x = 0.5;
-		// mesh2.position.x = treFr;
+	
 		mesh2.scale.x = 12*lowFr;
 		mesh2.scale.y = 12*lowFr;
 		mesh2.scale.z = 12*lowFr;
@@ -371,29 +360,21 @@ function render2() {
 
 					mesh2.rotation.z += step;
 
-					// mesh2.morphTargetInfluences[ 1 ] = mesh2.morphTargetInfluences[ 1 ] + step * sign;
-
-					// if ( mesh2.morphTargetInfluences[ 1 ] <= 0 || mesh2.morphTargetInfluences[ 1 ] >= 1 ) {
-
-					// 	sign *= - 1;
-					// }
+					
 	}
 
 	//Reference from : https://threejs.org/examples/?q=sphere#webgl_morphtargets_sphere [3D shape updates]
 	/////////////THIRD MODEL/////////////
 	if ( mesh3 !== undefined ) {
-		// const step = delta * speed;
-		// mesh2.rotation.y += step;
-		//mesh3.position.x = 1;
-		// mesh2.position.x = treFr;
+		
 		mesh3.scale.x = 100*treFr;
 		mesh3.scale.y = 100*treFr;
 		mesh3.scale.z = 100*treFr;
-		// console.log(bassFr);
+	
 
 		var step = delta * speed;
 
-					//mesh3.rotation.y += step;
+				
 
 					mesh3.morphTargetInfluences[ 1 ] = mesh3.morphTargetInfluences[ 1 ] + step * sign;
 
